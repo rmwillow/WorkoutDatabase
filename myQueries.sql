@@ -19,9 +19,28 @@ create table Exercises
             primary key autoincrement
 );
 
+create table Users_table
+(
+    UsersId        int
+        constraint Users_table_pk
+            primary key,
+    UsersFirstName int not null,
+    UsersLastName  int not null
+);
 
 
+create table Users_Exercise_Table
+(
+    UsersId    int
+        references Users_table,
+    ExerciseId int
+        references Exercises
+);
 
-SELECT ExerciseName from Exercises as E
-JOIN Muscles M on E.MuscleId = M.MuscleID
+
+SELECT ExerciseName
+from Exercises as E
+         JOIN Muscles M on E.MuscleId = M.MuscleID
 WHERE M.MuscleName = ' adductors'
+
+
