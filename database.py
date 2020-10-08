@@ -1,8 +1,8 @@
 # from .exercisesApi import exerciseList
 import sqlite3
 
-from exercisesApi import dictTamp
-from myQueries import *
+from exercisesApi import exerciseApiResults
+import SqlQueries
 import os
 
 """
@@ -30,8 +30,6 @@ class DataBase(object):
         :param restart: init calls on the data and restarts/refreshes it when it is set to True
         """
 
-
-
         if not os.path.isfile("tutorial.db"):
             restart = True
 
@@ -49,12 +47,12 @@ class DataBase(object):
             self.cursor.execute('DROP TABLE IF EXISTS Workout_Exercise')
             self.cursor.execute('DROP TABLE IF EXISTS Previous_Workouts')
 
-            self.cursor.execute(exercises_table)
-            self.cursor.execute(muscles_table)
-            self.cursor.execute(Users_Table)
-            self.cursor.execute(Workout_Table)
-            self.cursor.execute(Users_Workout_Table)
-            self.cursor.execute(Workout_Exercise_Table)
+            self.cursor.execute(SqlQueries.exercises_table)
+            self.cursor.execute(SqlQueries.muscles_table)
+            self.cursor.execute(SqlQueries.Users_Table)
+            self.cursor.execute(SqlQueries.Workout_Table)
+            self.cursor.execute(SqlQueries.Users_Workout_Table)
+            self.cursor.execute(SqlQueries.Workout_Exercise_Table)
             """after it has dropped the tables it is set to create the new tables above"""
             """it than trys and executes muscle table id index which we created in my 
             quieries.py using an input function of python called index. Index which 
@@ -65,18 +63,18 @@ class DataBase(object):
             # except Exception as exception:
             #    print(exception)
             #    print('this index already exists')
-            """ for muscle and exercises table in dictTamp
+            """ for muscle and exercises table in exerciseApiResults
              dictionary  it executes muscle_table_insert and inserts the value of muscle
              than it selects muscleId column from muscles table where muscle name equals to null.
              it than takes muscle id and uses fetchone which Fetches the next row in the list"""
-            for muscle, exercises in dictTamp.items():
-                self.cursor.execute(muscles_table_insert, [muscle])
+            for muscle, exercises in exerciseApiResults.items():
+                self.cursor.execute(SqlQueries.muscles_table_insert, [muscle])
                 self.cursor.execute('select MuscleID from Muscles where MuscleName = ?', [muscle])
                 muscleId = self.cursor.fetchone()[0]
                 for exercise in exercises:
-                    self.cursor.execute(exercises_table_insert, [exercise, muscleId])
+                    self.cursor.execute(SqlQueries.exercises_table_insert, [exercise, muscleId])
 
-            self.cursor.execute(exercises_table_update_muscleid)
+            self.cursor.execute(SqlQueries.exercises_table_update_muscleid)
 
             self.cursor.execute('DELETE FROM Muscles WHERE MuscleID = 19;')
 
@@ -95,7 +93,7 @@ class DataBase(object):
         :return: the next row in the list of muscles
         """
         results = []
-        self.cursor.execute(search_by_muscle, [muscle])
+        self.cursor.execute(SqlQueries.search_by_muscle, [muscle])
         sql_results = self.cursor.fetchall()
         for row in sql_results:
             results.append(row[0])
@@ -107,7 +105,7 @@ class DataBase(object):
         :return: the next row in the list of exercises
         """
         results = []
-        self.cursor.execute(search_by_exercise_id, [exercise])
+        self.cursor.execute(SqlQueries.search_by_exercise_id, [exercise])
         sql_results = self.cursor.fetchall()
         for row in sql_results:
             results.append(row[0])
@@ -146,7 +144,7 @@ class DataBase(object):
         :return: firstName and Lastname from user input and
         inserts it into the database with user_table
         """
-        self.cursor.execute(Users_Table_insert, [firstname, lastname])
+        self.cursor.execute(SqlQueries.Users_Table_insert, [firstname, lastname])
         self.connection.commit()
 
     def Workout_Table_insert(self, workoutName):
@@ -155,12 +153,21 @@ class DataBase(object):
         :param workoutName:
         :return: workoutname that was inputed by the user and inserts it into workout_table
         """
-        self.cursor.execute(Workout_Table_insert, [workoutName])
+        self.cursor.execute(SqlQueries.Workout_Table_insert, [workoutName])
         self.connection.commit()
 
-    #    def Previous_Table_Workouts_insert(self, existingWorkout, workoutId, MultipleSelection):
-    #        self.cursor.execute(Previous_Table_Workouts_insert, [existingWorkout, workoutId, MultipleSelection])
-    #        self.connection.commit()
+    def Previous_Table_Workouts_insert(self, existingWorkout, workoutId, MultipleSelection):
+        """
+
+        :param existingWorkout:
+        :param workoutId:
+        :param MultipleSelection:
+        :return:
+        """
+
+        self.cursor.execute(SqlQueries.Previous_Table_Workouts_insert, [existingWorkout, workoutId, MultipleSelection])
+        self.connection.commit()
+
     def Users_Workout_Table_insert(self, userId, workoutId):
         """
 
@@ -169,7 +176,7 @@ class DataBase(object):
         :return:it inerts userId and workoutId into user_workout_table
         assigning it a number in order of input being entered
         """
-        self.cursor.execute(Users_Workout_Table_insert, [userId, workoutId])
+        self.cursor.execute(SqlQueries.Users_Workout_Table_insert, [userId, workoutId])
         self.connection.commit()
 
     def Workout_Exercise_Table_insert(self, workoutId, exerciseId):
@@ -179,7 +186,7 @@ class DataBase(object):
         :param exerciseId:
         :return: assigning workoutId and exerciseId into workout_exercise_table
         """
-        self.cursor.execute(Workout_Exercise_Table_insert, [workoutId, exerciseId])
+        self.cursor.execute(SqlQueries.Workout_Exercise_Table_insert, [workoutId, exerciseId])
         self.connection.commit()
 
     def search_by_Users_Exercises(self, firstname):
@@ -190,7 +197,7 @@ class DataBase(object):
         which is first name and appends the results to an empty list
         """
         results = []
-        self.cursor.execute(search_by_user_exercises, [firstname])
+        self.cursor.execute(SqlQueries.search_by_user_exercises, [firstname])
         sql_results = self.cursor.fetchall()
         for row in sql_results:
             results.append(row[0])
@@ -226,11 +233,9 @@ class DataBase(object):
 
     def search_by_previous_workouts(self, WorkoutName):
         results = []
-        self.cursor.execute(Previous_Table_Workouts, [WorkoutName])
+        self.cursor.execute(SqlQueries.Previous_Table_Workouts, [WorkoutName])
         sql_results = self.cursor.fetchall()
         for row in sql_results:
             results.append(row[0])
         return results
 
-    def display_all_muslces(self):
-        pass

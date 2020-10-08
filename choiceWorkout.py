@@ -2,13 +2,13 @@
 # from myQueries import Users_Table
 from database import DataBase
 
-# from exercisesApi import *
+from exercisesApi import *
 
 # import password as password
 # import username
 
 
-
+data_base = DataBase()
 
 
 def generate_choices(choices):
@@ -31,17 +31,17 @@ def show_exercise_options(userId, exercise_options):
                  f" Select a exercise by Muscle Group:")
 
 
-def new_work_out():
+def new_work_out(userId):
     selected_workout = input(f"What is the name of your workout: ")
     data_base.Workout_Table_insert(selected_workout)
     workoutId = data_base.search_by_workout(selected_workout)
     data_base.Users_Workout_Table_insert(userId, int(workoutId))
 
-def existing_work_out():
+def existing_work_out(userId):
     pass
 
 
-def workouts(userId):
+def show_workouts_options(userId):
     """
     Finds user a existing workout or creates new workout
 
@@ -51,17 +51,18 @@ def workouts(userId):
     selectedMainMenu = input(
         f"Welcome\nPlease select an option \n{generate_choices(first_option)}\n\n What is your choice:")
     if int(selectedMainMenu) == 0:
-        new_work_out()
+        new_work_out(userId)
+        show_muscle_options()
     if int(selectedMainMenu) == 1:
-        existing_work_out()
+        existing_work_out(userId)
 
 
 
 
 
 
-def musclue_something():
-    muscle_options = data_base.display_all_muslces()
+def show_muscle_options():
+    muscle_options = data_base.display_all_muscles()
     selectedMuscleGroup = input(
         f"Select a Workout by Muscle Group\n{generate_choices(muscle_options)}\n\n What is your Muscle choice, "
         f"If mulitiple use a comma to add Multiple Muscle Groups "
@@ -92,18 +93,8 @@ def musclue_something():
 
 
 def orderOfStuff(userId):
-    workouts(userId)
+    show_workouts_options(userId)
 
 
 
-if __name__ == "__main__":
-    data_base = DataBase(restart=False)
-    firstname = input("First Name: ")
-    userId = data_base.search_by_firstname(firstname)
-    if userId:
-        orderOfStuff(userId)
-    else:
-        lastname = input("Last Name: ")
-        data_base.add_user(firstname, lastname)
-        userId = data_base.search_by_firstname(firstname)
-        orderOfStuff(userId)
+

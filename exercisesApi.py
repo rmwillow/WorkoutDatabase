@@ -24,7 +24,7 @@ exerciseList = rawData.split('\n')
 """ telling the python interpreter what data types will
  be in this dictionary for ex: the key will be a  
  str and the value will be a list that has strings as elements """
-dictTamp: Dict[str, List[str]] = dict()
+exerciseApiResults: Dict[str, List[str]] = dict()
 
 """creating a function called clean data giving it a argument/parameter of x"""
 
@@ -68,25 +68,25 @@ for exercise in exerciseList:
     exerciseType = clean_data(exerciseComma[1])
     exerciseWorkout = clean_data(exerciseComma[0])
 
-    '''if it is dictTamp  it retrieves exerciseType and appends it
+    '''if it is exerciseApiResults  it retrieves exerciseType and appends it
     to exerciseWorkout (append method adds an item to the end of the list)'''
-    if dictTamp.get(exerciseType):
-        dictTamp[exerciseType].append(exerciseWorkout)
+    if exerciseApiResults.get(exerciseType):
+        exerciseApiResults[exerciseType].append(exerciseWorkout)
     else:
         """if it is not dictamp else will assign exercise workout list to the name of tempList.
-            than it will add the list of exercise type from dictTamp and append it to templist.
-            printing the result of dictTamp and getting a return of abdominals."""
+            than it will add the list of exercise type from exerciseApiResults and append it to templist.
+            printing the result of exerciseApiResults and getting a return of abdominals."""
         tempList = [exerciseWorkout]
-        dictTamp[exerciseType] = tempList
+        exerciseApiResults[exerciseType] = tempList
 
 
 
 
 """the key is used to access the elements of the dictionary.
 the value returns the list of values in the dictionary specified.
-and in dictTamp is providing the dictionary name we want to retrieve our values from.
-and we append the items method to our dictionary dictTamp so that
-it will display our list from dictTamp now that we provided the KEY, VALUE and dictionary name.
+and in exerciseApiResults is providing the dictionary name we want to retrieve our values from.
+and we append the items method to our dictionary exerciseApiResults so that
+it will display our list from exerciseApiResults now that we provided the KEY, VALUE and dictionary name.
 """
-for key, value in dictTamp.items():
-    dictTamp[key] = list(set(value))
+for key, value in exerciseApiResults.items():
+    exerciseApiResults[key] = list(set(value))
