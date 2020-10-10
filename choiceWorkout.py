@@ -32,6 +32,16 @@ def show_exercise_options(exercise_options):
                  f"  (EX: 1, 2  Displays: Lying Knee Curl, Goblet squat \n{generate_choices(exercise_options)}\n"
                  f" Select a exercise by Muscle Group:")
 
+def show_existing_workout_options(workout_options):
+    """
+    :param exercise_options: generate choices with exercise option
+    :return: displays input and allows input with generate choices and exercise options as the choices
+    """
+
+    return input(f"\n\n Please select existing workout options "
+                 f"\n{generate_choices(workout_options)}\n"
+                 f" Select a Workout:")
+
 
 def new_work_out(userId):
     selected_workout = input(f"What is the name of your workout: ")
@@ -42,7 +52,13 @@ def new_work_out(userId):
 
 
 def existing_work_out(userId):
-    pass
+    userWorkouts = data_base.search_workout_by_userId(userId)
+    display_workouts = [x['WorkoutName'] for x in userWorkouts]
+    workout_choice = show_existing_workout_options(display_workouts)
+    if display_workouts[int(workout_choice)] == userWorkouts[int(workout_choice)]['WorkoutName']:
+        workoutId = userWorkouts[int(workout_choice)]['WorkoutID']
+        results = data_base.search_by_workout_exercises(workoutId)
+        print(generate_choices(results))
 
 
 def show_workouts_options(userId):

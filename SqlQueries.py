@@ -71,11 +71,11 @@ WHERE WorkoutName = ?"""
 search_by_exercise_id = """SELECT ExerciseId FROM Exercises
 WHERE ExerciseName = ?"""
 
-search_by_user_exercises = """
-SElECT Exercises.ExerciseName from Exercises
-JOIN Users_Exercises UE on Exercises.ExerciseId = UE.ExerciseId
-JOIN Users U on UE.UsersId = U.UsersId
-WHERE U.UsersFirstName = ?
+search_by_workout_exercises = """
+SELECT ExerciseName FROM Workout
+JOIN Workout_exercise We on Workout.WorkoutID = We.WorkoutID
+JOIN Exercises E on E.ExerciseId = We.ExerciseId
+WHERE We.WorkoutID = ?
 """
 
 search_by_multiple_selection = """
@@ -106,3 +106,7 @@ WHERE
     MuscleId = 19 
 ;"""
 
+
+search_workout_by_userId = """SELECT W.WorkoutID, W.WorkoutName FROM Users_Workout
+JOIN Workout W on Users_Workout.WorkoutID = W.WorkoutID
+WHERE Users_Workout.UserId = ?"""

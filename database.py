@@ -190,7 +190,7 @@ class DataBase(object):
         self.cursor.execute(SqlQueries.Workout_Exercise_Table_insert, [workoutId, exerciseId])
         self.connection.commit()
 
-    def search_by_Users_Exercises(self, firstname):
+    def search_by_workout_exercises(self, workoutId):
         """
 
         :param firstname:
@@ -198,7 +198,7 @@ class DataBase(object):
         which is first name and appends the results to an empty list
         """
         results = []
-        self.cursor.execute(SqlQueries.search_by_user_exercises, [firstname])
+        self.cursor.execute(SqlQueries.search_by_workout_exercises, [workoutId])
         sql_results = self.cursor.fetchall()
         for row in sql_results:
             results.append(row[0])
@@ -240,3 +240,12 @@ class DataBase(object):
             results.append(row[0])
         return results
 
+
+    def search_workout_by_userId(self, userId):
+        results = []
+        self.cursor.execute(SqlQueries.search_workout_by_userId, [userId])
+        sql_results = self.cursor.fetchall()
+        for row in sql_results:
+            results.append({'WorkoutID': row[0],
+                           'WorkoutName': row[1]})
+        return results
