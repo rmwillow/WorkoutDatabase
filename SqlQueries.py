@@ -56,8 +56,8 @@ Users_Workout_Table = """create table Users_Workout
 );
 """
 
-search_by_muscle = """SELECT ExerciseName FROM Muscles
-    JOIN Exercises E on Muscles.MuscleID = E.MuscleId
+search_by_muscle = """SELECT Exercises.ExerciseName, Exercises.ExerciseId FROM Muscles
+    JOIN Exercises  on Muscles.MuscleID = Exercises.MuscleId
 
 WHERE MuscleName = ?"""
 

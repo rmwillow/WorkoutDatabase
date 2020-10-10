@@ -96,7 +96,8 @@ class DataBase(object):
         self.cursor.execute(SqlQueries.search_by_muscle, [muscle])
         sql_results = self.cursor.fetchall()
         for row in sql_results:
-            results.append(row[0])
+            results.append({'ExerciseName': row[0],
+                           'ExerciseId': row[1]})
         return results
 
     def search_by_exercise_id(self, exercise):
