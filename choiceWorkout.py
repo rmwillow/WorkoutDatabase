@@ -38,6 +38,7 @@ def new_work_out(userId):
     data_base.Workout_Table_insert(selected_workout)
     workoutId = data_base.search_by_workout(selected_workout)
     data_base.Users_Workout_Table_insert(userId, int(workoutId))
+    return workoutId
 
 
 def existing_work_out(userId):
@@ -54,13 +55,17 @@ def show_workouts_options(userId):
     selectedMainMenu = input(
         f"Welcome\nPlease select an option \n{generate_choices(first_option)}\n\n What is your choice:")
     if int(selectedMainMenu) == 0:
-        new_work_out(userId)
-        show_muscle_options()
-    if int(selectedMainMenu) == 1:
+        workoutId = new_work_out(userId)
+        userExercisesIds = show_muscle_exercises_options()
+        for exerciseid in userExercisesIds:
+            data_base.Workout_Exercise_Table_insert(workoutId, exerciseid)
+        
+
+    elif int(selectedMainMenu) == 1:
         existing_work_out(userId)
 
 
-def show_muscle_options():
+def show_muscle_exercises_options():
     all_muscle_options = data_base.display_all_muscles()
     selectedMuscleGroup = input(
         f"Select a Workout by Muscle Group\n{generate_choices(all_muscle_options)}\n\n What is your Muscle choice, "
@@ -80,19 +85,13 @@ def show_muscle_options():
     display_exercises = [x['Exercise_display'] for x in exercise_list]
     selectedExercises = show_exercise_options(display_exercises)
 
-
     multiple_exercise_options = selectedExercises.split(',')
+    userExercisesIds = []
     for options in multiple_exercise_options:
-        display_exercises[int(options)] == exercise_list[int(options)]['Exercise_display']
-        multiExerciseOptionList = []
-    results = data_base.search_by_workout(exercise_options[int(multiple)])
-    for result in results:
-        multiExerciseOptionList.append(f'{result}- {exercise_options[int(multiple)]}')
-    else:
-        exercise_options = data_base.search_by_muscle(muscle_options[int(selectedMuscleGroup)])
-        selectedExercises = show_exercise_options(exercise_options)
-        exercise_id = data_base.search_by_exercise_id(exercise_options[int(selectedExercises)])
-        data_base.Workout_Exercise_Table_insert(workoutId, exercise_id[0])
+        if display_exercises[int(options)] == exercise_list[int(options)]['Exercise_display']:
+            userExercisesIds.append(exercise_list[int(options)]['ExerciseId'])
+
+    return userExercisesIds
 
 
 def orderOfStuff(userId):
